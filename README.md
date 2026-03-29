@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🔥 SML Bot — DigitalOcean VPS Manager
+# 🔥 Digital Ocean Manager Bot
 
-**A Telegram bot to manage your DigitalOcean VPS instances — right from your phone.**
+**Manage your DigitalOcean VPS instances directly from Telegram.**
 
 [![Python](https://img.shields.io/badge/Python-3.7%2B-blue?style=flat-square&logo=python)](https://python.org)
 [![pyTelegramBotAPI](https://img.shields.io/badge/pyTelegramBotAPI-3.8.2-blue?style=flat-square)](https://github.com/eternnoir/pyTelegramBotAPI)
@@ -13,28 +13,30 @@
 
 ---
 
-## 📌 Credits & Attribution
+## 🙏 Original Author
 
-> **Original bot logic, architecture, and core implementation by:**
-> **[FighterTunnel](https://github.com/FighterTunnel/DigitalOcean-TeleBot)** — all credit goes to him for the original work. 🙏
+> **All core logic, architecture, and original implementation belongs to:**
 >
-> This fork is a **community contribution** by **[SML The Unknown (@codeninjaxd)](https://t.me/codeninjaxd)**.
-> My contribution was purely:
-> - 🌐 **Translating** the entire codebase from Indonesian → English
-> - 🔤 **Internationalizing** all UI text, button labels, status messages, and error strings
-> - 🏷 **Rebranding** to SML Bot cosmetics (icons, dividers, consistent formatting)
-> - ✨ **Adding a few QoL features** (server presets, confirm dialogs, ping command, about panel)
-> - 📝 **Writing this README** because the original didn't have one in English 😄
+> ### [FighterTunnel](https://github.com/FighterTunnel/DigitalOcean-TeleBot) ⭐
 >
-> If you find this useful, go star the **original repo** first. That's where the real work happened.
+> Please go **star his repository** — that's where the real work was done.
+> This repo would not exist without him.
 
 ---
 
-## 🤔 What Is This?
+## 👋 About This Fork
 
-A Telegram bot that acts as a full control panel for your [DigitalOcean](https://digitalocean.com) account. No web browser needed — create VPS servers, manage them, check balances, reset passwords, all from Telegram inline keyboards.
+This is a community fork maintained by **[PmOfBangladesh](https://github.com/PmOfBangladesh)** — also known as **SML The Unknown** (`@codeninjaxd` on Telegram).
 
-Think of it as a lightweight CLI for DigitalOcean, but your mom could use it.
+My contributions to this fork:
+
+- 🌐 **Translated** the entire codebase from Indonesian → English
+- 🔤 **Internationalized** all UI text, button labels, status messages and error strings
+- ✨ **Added QoL features** — server presets, confirm dialogs before destructive actions, `/ping` command, about panel, stats screen
+- 🏷 **Consistent formatting** — icons, dividers, branding throughout all screens
+- 📝 **Wrote this README** because the original didn't have one in English 😄
+
+I didn't reinvent the wheel — I just made it readable for the rest of the world.
 
 ---
 
@@ -44,7 +46,7 @@ Think of it as a lightweight CLI for DigitalOcean, but your mom could use it.
 |---|---|---|
 | 💳 | Multi-Account | Link multiple DigitalOcean accounts |
 | 🌐 | Create VPS | Wizard with **Server Presets** or full custom size browser |
-| 🖥 | Manage VPS | Start, stop, reboot, rebuild, delete — all inline |
+| 🖥 | Manage VPS | Start, stop, reboot, rebuild, delete — all from inline keyboard |
 | 🔑 | Reset Password | Reset root password on any droplet |
 | 🧪 | Batch Test | Test all accounts in one tap, auto-clean invalid tokens |
 | 💰 | Balance Check | Live balance & monthly usage per account |
@@ -57,50 +59,48 @@ Think of it as a lightweight CLI for DigitalOcean, but your mom could use it.
 
 ## 📦 Server Presets
 
-When creating a VPS you can pick a preset or browse every available size on your account:
-
-| Preset | Spec | Typical Use |
-|---|---|---|
-| 🥉 Starter | 1 vCPU / 1 GB RAM / 25 GB SSD | Light proxies, tunnels |
-| 🥈 Basic | 1 vCPU / 2 GB RAM / 50 GB SSD | Small apps |
-| 🥇 Standard | 2 vCPU / 2 GB RAM / 60 GB SSD | Medium workloads |
-| 💎 Pro | 2 vCPU / 4 GB RAM / 80 GB SSD | Production apps |
-| 🚀 Power | 4 vCPU / 8 GB RAM / 160 GB SSD | Heavy workloads |
-| ⚡ Ultra | 8 vCPU / 16 GB RAM / 320 GB SSD | Serious stuff |
-| 🔧 Custom | All available sizes | You know what you're doing |
+| Preset | Spec |
+|---|---|
+| 🥉 Starter | 1 vCPU / 1 GB RAM / 25 GB SSD |
+| 🥈 Basic | 1 vCPU / 2 GB RAM / 50 GB SSD |
+| 🥇 Standard | 2 vCPU / 2 GB RAM / 60 GB SSD |
+| 💎 Pro | 2 vCPU / 4 GB RAM / 80 GB SSD |
+| 🚀 Power | 4 vCPU / 8 GB RAM / 160 GB SSD |
+| ⚡ Ultra | 8 vCPU / 16 GB RAM / 320 GB SSD |
+| 🔧 Custom | Browse all available sizes on your account |
 
 ---
 
 ## 🚀 Deploy Guide
 
-### Option A — One-liner install (recommended for VPS)
+### Option A — One-liner (recommended)
 
-SSH into your server and run:
+SSH into your Linux server and run:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/codeninjaxd/SML-Bot/main/start)
+bash <(curl -s https://raw.githubusercontent.com/PmOfBangladesh/Digital-Ocean-Manager/main/start)
 ```
 
-It will ask for your bot token, admin Telegram ID, and store name — then handle everything else automatically.
+The script will prompt for your bot token, admin Telegram ID, and store name — then handle everything automatically including systemd setup.
 
 ---
 
-### Option B — Manual install
+### Option B — Manual
 
-**Step 1 — Clone the repo**
+**1. Clone**
 
 ```bash
-git clone https://github.com/codeninjaxd/SML-Bot.git
-cd SML-Bot
+git clone https://github.com/PmOfBangladesh/Digital-Ocean-Manager.git
+cd Digital-Ocean-Manager
 ```
 
-**Step 2 — Install dependencies**
+**2. Install dependencies**
 
 ```bash
 pip3 install -r requirements.txt
 ```
 
-**Step 3 — Configure the bot**
+**3. Configure**
 
 Edit `config.json`:
 
@@ -116,13 +116,11 @@ Edit `config.json`:
 
 | Key | Description |
 |---|---|
-| `NAME` | Bot display name shown in the welcome message |
-| `TOKEN` | Get from [@BotFather](https://t.me/BotFather) on Telegram |
-| `ADMINS` | Array of Telegram user IDs allowed to use the bot |
+| `NAME` | Display name shown in the welcome message |
+| `TOKEN` | Get from [@BotFather](https://t.me/BotFather) |
+| `ADMINS` | Your Telegram user ID — get it from [@userinfobot](https://t.me/userinfobot) |
 
-> Don't know your Telegram user ID? Message [@userinfobot](https://t.me/userinfobot).
-
-**Step 4 — Run it**
+**4. Run**
 
 ```bash
 python3 main.py
@@ -130,25 +128,22 @@ python3 main.py
 
 ---
 
-### Option C — Run as a systemd service (so it survives reboots)
-
-The `start` script does this automatically, but if you set it up manually:
+### Option C — Systemd Service (run on boot, auto-restart)
 
 ```bash
-# Create the service file
 nano /etc/systemd/system/smlbot.service
 ```
 
-Paste this:
+Paste:
 
 ```ini
 [Unit]
-Description=SML Bot — DigitalOcean VPS Manager
+Description=Digital Ocean Manager Bot
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /root/SML-Bot/main.py
-WorkingDirectory=/root/SML-Bot
+ExecStart=/usr/bin/python3 /root/Digital-Ocean-Manager/main.py
+WorkingDirectory=/root/Digital-Ocean-Manager
 Restart=always
 RestartSec=5
 User=root
@@ -157,7 +152,7 @@ User=root
 WantedBy=multi-user.target
 ```
 
-Then enable and start:
+Enable and start:
 
 ```bash
 systemctl daemon-reload
@@ -165,73 +160,20 @@ systemctl enable smlbot
 systemctl start smlbot
 ```
 
----
-
-## 🛠 Useful Commands (after systemd install)
+**Useful commands:**
 
 ```bash
-# Live logs
-journalctl -u smlbot -f
-
-# Check status
-systemctl status smlbot
-
-# Restart
-systemctl restart smlbot
-
-# Stop
-systemctl stop smlbot
-```
-
----
-
-## 📋 Requirements
-
-- Python 3.7+
-- Linux — Ubuntu / Debian / CentOS / AlmaLinux (Windows untested, probably fine)
-- A Telegram Bot Token → [@BotFather](https://t.me/BotFather)
-- A DigitalOcean API Token → [Generate here](https://cloud.digitalocean.com/account/api/tokens)
-
----
-
-## 📁 Project Structure
-
-```
-SML-Bot/
-├── main.py                           # Entry point — loads config, starts polling
-├── bot.py                            # Message & callback query router
-├── _bot.py                           # Telebot instance singleton
-├── config.json                       # Your bot token, admin IDs, display name
-├── requirements.txt
-├── start                             # One-click install + systemd setup script
-│
-├── modules/
-│   ├── start.py                      # /start menu, /ping, stats, about
-│   ├── add_account.py                # Add DO accounts (bulk paste supported)
-│   ├── manage_accounts.py            # Account list
-│   ├── account_detail.py             # Account info + live balance
-│   ├── delete_account.py             # Delete account (with confirm step)
-│   ├── batch_test_accounts.py        # Test all accounts at once
-│   ├── batch_test_delete_accounts.py # Auto-remove invalid accounts
-│   ├── manage_droplets.py            # VPS manager entry screen
-│   ├── create_droplet.py             # Full VPS creation wizard + presets
-│   ├── list_droplets.py              # Droplet list per account
-│   ├── droplet_detail.py             # Full droplet info panel
-│   └── droplet_actions.py            # Delete / shutdown / reboot / rebuild / etc.
-│
-└── utils/
-    ├── db.py                         # TinyDB wrapper (AccountsDB)
-    ├── localizer.py                  # Region slugs → readable names + flags
-    ├── password_generator.py         # Strong random password generator
-    ├── set_root_password_script.py   # Cloud-init script to enable root SSH
-    └── helpers.py                    # Shared branding constants & formatters
+journalctl -u smlbot -f       # Live logs
+systemctl status smlbot        # Check status
+systemctl restart smlbot       # Restart
+systemctl stop smlbot          # Stop
 ```
 
 ---
 
 ## 💬 Bot Commands
 
-| Command | What it does |
+| Command | Description |
 |---|---|
 | `/start` | Open main menu |
 | `/add_do` | Add a DigitalOcean account |
@@ -243,17 +185,25 @@ SML-Bot/
 
 ---
 
+## 📋 Requirements
+
+- Python 3.7+
+- Linux — Ubuntu / Debian / CentOS / AlmaLinux
+- Telegram Bot Token → [@BotFather](https://t.me/BotFather)
+- DigitalOcean API Token → [Generate here](https://cloud.digitalocean.com/account/api/tokens)
+
+---
+
 ## ⚠️ Disclaimer
 
-This is an unofficial tool. It is not affiliated with or endorsed by DigitalOcean.
-Use at your own risk. Don't deploy this on a public server without proper access controls.
+Unofficial tool. Not affiliated with or endorsed by DigitalOcean in any way.
 
 ---
 
 <div align="center">
 
-**Original work by [FighterTunnel](https://github.com/FighterTunnel/DigitalOcean-TeleBot)** — go give that repo a ⭐
+### Original work by [FighterTunnel](https://github.com/FighterTunnel/DigitalOcean-TeleBot) — please go ⭐ his repo
 
-**Translated & contributed by [@codeninjaxd](https://t.me/codeninjaxd) — SML The Unknown**
+Translated & maintained by [PmOfBangladesh](https://github.com/PmOfBangladesh) · SML The Unknown · [@codeninjaxd](https://t.me/codeninjaxd)
 
 </div>
