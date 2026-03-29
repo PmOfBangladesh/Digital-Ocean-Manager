@@ -1,5 +1,5 @@
 from os import environ
-from telebot.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from telebot.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from _bot import bot
 from utils.db import AccountsDB
 from utils.helpers import DIVIDER, BOT_TAG, BOT_BRAND, fmt_time
@@ -7,24 +7,29 @@ from utils.helpers import DIVIDER, BOT_TAG, BOT_BRAND, fmt_time
 bot_name = environ.get('bot_name', 'SML Bot')
 
 
-def start(d: Message):
-    account_count = AccountsDB().count()
+def _start_menu_markup() -> InlineKeyboardMarkup:
+    """Build and return the inline keyboard for the start menu."""
     markup = InlineKeyboardMarkup(row_width=2)
     markup.add(
-        InlineKeyboardButton('➕ Add Account',    callback_data='add_account'),
+        InlineKeyboardButton('➕ Add Account', callback_data='add_account'),
         InlineKeyboardButton('⚙️ Manage Accounts', callback_data='manage_accounts'),
-        InlineKeyboardButton('🌐 Create VPS',      callback_data='create_droplet'),
-        InlineKeyboardButton('🖥 Manage VPS',      callback_data='manage_droplets'),
+        InlineKeyboardButton('🌐 Create VPS', callback_data='create_droplet'),
+        InlineKeyboardButton('🖥 Manage VPS', callback_data='manage_droplets'),
     )
     markup.row(
-        InlineKeyboardButton('🧪 Batch Test',  callback_data='batch_test_accounts'),
-        InlineKeyboardButton('📊 My Stats',    callback_data='stats'),
+        InlineKeyboardButton('🧪 Batch Test', callback_data='batch_test_accounts'),
+        InlineKeyboardButton('📊 My Stats', callback_data='stats'),
     )
     markup.row(
-        InlineKeyboardButton('ℹ️ About',        callback_data='about'),
+        InlineKeyboardButton('ℹ️ About', callback_data='about'),
     )
+    return markup
 
-    t = (
+
+def _start_text() -> str:
+    """Generate the text for the start menu."""
+    account_count = AccountsDB().count()
+    return (
         f'🔥 <b>Welcome to {bot_name}</b>\n'
         f'{DIVIDER}\n'
         f'👤 <b>Dev:</b> {BOT_TAG}\n'
@@ -32,25 +37,22 @@ def start(d: Message):
         f'{DIVIDER}\n'
         f'💳 <b>Linked Accounts:</b> <code>{account_count}</code>\n'
         f'🕐 <b>Time:</b> <code>{fmt_time()}</code>\n'
-        f'{DIVIDER}\n'
-        f'<b>Quick Commands:</b>\n'
-        f'/start — Main menu\n'
-        f'/add_do — Add DO account\n'
-        f'/sett_do — Manage accounts\n'
-        f'/bath_do — Batch test accounts\n'
-        f'/add_vps — Create VPS\n'
-        f'/sett_vps — Manage VPS\n'
-        f'/ping — Check bot status\n'
+        f'{DIVIDER}'
     )
+
+
+def start(d: Message):
+    """Handle /start command – send the main menu."""
     bot.send_message(
-        text=t,
+        text=_start_text(),
         chat_id=d.from_user.id,
         parse_mode='HTML',
-        reply_markup=markup
+        reply_markup=_start_menu_markup()
     )
 
 
-def about(call):
+def about(call: CallbackQuery):
+    """Show about information."""
     markup = InlineKeyboardMarkup()
     markup.row(InlineKeyboardButton('🔙 Back to Menu', callback_data='back_to_start'))
     t = (
@@ -80,12 +82,19 @@ def about(call):
     )
 
 
-def back_to_start(call):
-    start(call)
+def back_to_start(call: CallbackQuery):
+    """Return to the main menu by editing the current message."""
+    bot.edit_message_text(
+        text=_start_text(),
+        chat_id=call.from_user.id,
+        message_id=call.message.message_id,
+        parse_mode='HTML',
+        reply_markup=_start_menu_markup()
+    )
 
 
-def stats(call):
-    from utils.db import AccountsDB
+def stats(call: CallbackQuery):
+    """Show bot statistics."""
     markup = InlineKeyboardMarkup()
     markup.row(InlineKeyboardButton('🔙 Back to Menu', callback_data='back_to_start'))
     account_count = AccountsDB().count()
@@ -107,6 +116,7 @@ def stats(call):
 
 
 def ping(d: Message):
+    """Respond with bot latency."""
     import time
     start_time = time.time()
     msg = bot.send_message(
