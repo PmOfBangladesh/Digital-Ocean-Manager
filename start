@@ -1,0 +1,108 @@
+#!/bin/bash
+
+# ╔══════════════════════════════════════════════════╗
+# ║   🔥 SML Bot — DigitalOcean VPS Manager          ║
+# ║   Dev: @codeninjaxd | Brand: SML The Unknown     ║
+# ╚══════════════════════════════════════════════════╝
+
+INSTALL_DIR="/root/SML-Bot"
+SERVICE_NAME="smlbot"
+SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME.service"
+REPO_URL="https://github.com/codeninjaxd/SML-Bot.git"
+
+echo ""
+echo "╔══════════════════════════════════════════════════╗"
+echo "║   🔥 SML Bot — DigitalOcean VPS Manager          ║"
+echo "║   Dev: @codeninjaxd | Brand: SML The Unknown     ║"
+echo "╚══════════════════════════════════════════════════╝"
+echo ""
+
+# ── Collect inputs ────────────────────────────────────
+while true; do
+    read -rp "  Enter Bot Token     : " bot_token
+    [[ -n "$bot_token" ]] && break
+    echo "  ❌ Token cannot be empty."
+done
+
+while true; do
+    read -rp "  Enter Admin Telegram ID : " bot_admin_id
+    [[ "$bot_admin_id" =~ ^[0-9]+$ ]] && break
+    echo "  ❌ Admin ID must be a number."
+done
+
+while true; do
+    read -rp "  Enter Bot/Store Name : " store_name
+    [[ -n "$store_name" ]] && break
+    echo "  ❌ Store name cannot be empty."
+done
+
+echo ""
+echo "  ⏳ Installing dependencies..."
+
+# ── System packages ───────────────────────────────────
+apt-get update -y -q
+
+command -v python3 &>/dev/null || apt-get install -y python3
+command -v pip3    &>/dev/null || apt-get install -y python3-pip
+command -v git     &>/dev/null || apt-get install -y git
+
+# ── Clone or update repo ──────────────────────────────
+if [ ! -d "$INSTALL_DIR/.git" ]; then
+    echo "  📦 Cloning repository..."
+    git clone "$REPO_URL" "$INSTALL_DIR"
+else
+    echo "  🔄 Updating repository..."
+    git -C "$INSTALL_DIR" pull
+fi
+
+# ── Install Python deps ───────────────────────────────
+if [ -f "$INSTALL_DIR/requirements.txt" ]; then
+    pip3 install -q -r "$INSTALL_DIR/requirements.txt"
+else
+    echo "  ⚠️  requirements.txt not found, skipping pip install."
+fi
+
+# ── Write config.json ─────────────────────────────────
+cat > "$INSTALL_DIR/config.json" << EOT
+{
+  "BOT": {
+    "NAME": "$store_name",
+    "TOKEN": "$bot_token",
+    "ADMINS": [$bot_admin_id]
+  }
+}
+EOT
+echo "  ✅ Config written."
+
+# ── Create / update systemd service ──────────────────
+cat > "$SERVICE_FILE" << EOT
+[Unit]
+Description=SML Bot — DigitalOcean VPS Manager
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 $INSTALL_DIR/main.py
+WorkingDirectory=$INSTALL_DIR
+StandardOutput=journal
+StandardError=journal
+Restart=always
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target
+EOT
+
+systemctl daemon-reload
+systemctl enable  "$SERVICE_NAME" -q
+systemctl restart "$SERVICE_NAME"
+
+echo ""
+echo "╔══════════════════════════════════════════════════╗"
+echo "║   ✅ SML Bot installed & running!                ║"
+echo "║                                                  ║"
+echo "║   View logs : journalctl -u $SERVICE_NAME -f     ║"
+echo "║   Stop bot  : systemctl stop $SERVICE_NAME       ║"
+echo "║   Restart   : systemctl restart $SERVICE_NAME    ║"
+echo "╚══════════════════════════════════════════════════╝"
+echo ""
