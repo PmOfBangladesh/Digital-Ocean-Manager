@@ -1,0 +1,7 @@
+{
+  "BOT": {
+    "NAME": "SML Bot",
+    "TOKEN": "YOUR_BOT_TOKEN_HERE",
+    "ADMINS": [123456789]
+  }
+}
