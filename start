@@ -8,7 +8,7 @@
 INSTALL_DIR="/root/SML-Bot"
 SERVICE_NAME="smlbot"
 SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME.service"
-REPO_URL="https://github.com/codeninjaxd/SML-Bot.git"
+REPO_URL="https://github.com/PmOfBangladesh/Digital-Ocean-Manager.git"
 
 echo ""
 echo "╔══════════════════════════════════════════════════╗"

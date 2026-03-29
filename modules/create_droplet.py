@@ -175,24 +175,27 @@ def select_server_preset(call: CallbackQuery, data: dict):
 
 # ─── Step 3b: Custom Size (browse all) ───────────────────────────────────────
 def select_size_custom(call: CallbackQuery, data: dict):
-    region_slug = data.get('region', [user_dict[call.from_user.id].get('region_slug')])[0]
-    user_dict[call.from_user.id].update({'region_slug': region_slug})
+    uid = call.from_user.id
+    if uid not in user_dict:
+        user_dict[uid] = {}
+    region_slug = data.get('region', [user_dict[uid].get('region_slug')])[0]
+    user_dict[uid].update({'region_slug': region_slug})
 
     bot.edit_message_text(
-        text=f'{_header(call.from_user.id)}⏳ Fetching available sizes...',
-        chat_id=call.from_user.id,
+        text=f'{_header(uid)}⏳ Fetching available sizes...',
+        chat_id=uid,
         message_id=call.message.message_id,
         parse_mode='HTML'
     )
 
     try:
         sizes = digitalocean.Manager(
-            token=user_dict[call.from_user.id]['account']['token']
+            token=user_dict[uid]['account']['token']
         ).get_all_sizes()
     except Exception as e:
         bot.edit_message_text(
-            text=f'{_header(call.from_user.id)}❌ Error fetching sizes:\n<code>{e}</code>',
-            chat_id=call.from_user.id,
+            text=f'{_header(uid)}❌ Error fetching sizes:\n<code>{e}</code>',
+            chat_id=uid,
             message_id=call.message.message_id,
             parse_mode='HTML'
         )
@@ -213,8 +216,8 @@ def select_size_custom(call: CallbackQuery, data: dict):
     ))
 
     bot.edit_message_text(
-        text=f'{_header(call.from_user.id)}📦 <b>Select Custom Size</b>',
-        chat_id=call.from_user.id,
+        text=f'{_header(uid)}📦 <b>Select Custom Size</b>',
+        chat_id=uid,
         message_id=call.message.message_id,
         parse_mode='HTML',
         reply_markup=markup
@@ -331,11 +334,13 @@ def ask_create(m: Message):
 
 
 def cancel_create(call: CallbackQuery):
+    uid = call.from_user.id
+    user_dict.pop(uid, None)
     markup = InlineKeyboardMarkup()
     markup.row(InlineKeyboardButton('🔙 Main Menu', callback_data='back_to_start'))
     bot.edit_message_text(
         text=f'❌ <b>VPS creation cancelled.</b>',
-        chat_id=call.from_user.id,
+        chat_id=uid,
         message_id=call.message.message_id,
         parse_mode='HTML',
         reply_markup=markup
@@ -383,12 +388,16 @@ def confirm_create(call: CallbackQuery, data: dict):
             message_id=call.message.message_id,
             parse_mode='HTML'
         )
+        user_dict.pop(uid, None)
         return
+
+    doc_id = user_dict[uid]['account'].doc_id
+    user_dict.pop(uid, None)
 
     markup = InlineKeyboardMarkup()
     markup.row(InlineKeyboardButton(
         '🔍 View Details',
-        callback_data=f'droplet_detail?doc_id={user_dict[uid]["account"].doc_id}&droplet_id={droplet.id}'
+        callback_data=f'droplet_detail?doc_id={doc_id}&droplet_id={droplet.id}'
     ))
     markup.row(InlineKeyboardButton('🔙 Main Menu', callback_data='back_to_start'))
 
